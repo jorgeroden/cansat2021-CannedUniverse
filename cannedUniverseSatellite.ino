@@ -1,10 +1,33 @@
 /*
   CANSAT 2021
   Equipo Canned Universe
-  IES Andres de Vandelvira e IES Ramon y Cajal(Albacete)
-  DATE:25-01-2020
-*/
+  IES Andres de Vandelvira e IES Ramon y Cajal (Albacete)
+  DATE:25-01-2021
 
+  Placa ESP32 DEVKIT V1
+  PINOUT:
+
+  I2C
+  SDA      GPIO 21
+  SCL      GPIO 22
+
+  SD CARD
+  SPI_MOSI GPIO 23
+  SPI_MISO GPIO 19
+  SPI_CLK  GPIO 18
+  SPI_CSO  GPIO 05
+
+  RADIO
+  RX  TX0
+  TX  RX0
+
+  GPS
+  TX  RX2
+  RX  TX2
+
+  DS18b20
+  DATA D4
+*/
 
 #include "libPressTemp.h"
 #include "libGPS.h"
@@ -12,35 +35,28 @@
 #include "libSDcard.h"
 #include "libGyro.h"
 
-//unsigned double packetsSend = 1;// change data type from long to double, to avoid errors in a later division
-//unsigned long double a;// to store millis() as a double, to avoid losing information in a later division
-
-double packetsSend = 1;
-long double a;
-
-bool SDcardWorking = false;// this is then set to true when the SDcard starts working, we assume it doesn't stop working during the program.
-
 long flag = millis();
 long flag2 = millis();
 boolean ultimoEnvio = false;
 boolean envio = false;
 boolean ultimoSalvaSD = false;
 boolean salvaSD = false;
-String dataPressTemp;
 String datos;
 
-
 void setup() {
+
   Serial.begin(9600);
-  initGPS();// starts the GPS from its .h file
-  initPressTemp();// starts the BMP180 from its .h file
-  initOLED();// starts the display from the .h file
+  Wire.begin();
+  initGPS();
+  initPressTemp();
+  initOLED();
   initSD();
+  initMPU();
 
 }
 
 void loop() {
-
+  mpu.update();
   if (millis() - flag > 1000)//Se envia cada 1000ms
   {
     envio  = !envio;
@@ -54,33 +70,25 @@ void loop() {
 
   if (ultimoSalvaSD != salvaSD) {
 
-    //dataPressTemp = getDataPressTemp();
     float tempOLED = tempForOLED();
     float pressOLED = pressForOLED();
-    //int metersHigh = gps.altitude.meters();
-    
-    //Compone la cadena para grabar datos en SD
-    //Pendiente de terminar
-    //String datosGPS = String(gps.location.lat()) + String(gps.location.lng()) + String(gps.altitude.meters());
-    //String datosGPS = getGPS();
-    //String datosAngulos = getYPR();
-    //datos = dataPressTemp + datosGPS + datosAngulos ;
-    datos = getDataPressTemp() + getGPS() + getYPR();
+
+    //Compone la cadena de texto para grabar datos en SD
+
+    datos = getDataPressTemp() + "," + getGPS() + "," + getYPR() + "," + getAcc();
     logSDCard(datos);
     displayTemperatura(tempOLED);
     displayPressure(pressOLED);
-    //displayAltitude(metersHigh);
     ultimoSalvaSD = salvaSD;
 
   }
 
   if (ultimoEnvio != envio)
   {
-    // Envio por radio de datos de mision primaria
+    // Envio por radio de datos
 
     ultimoEnvio = envio;
     Serial.println(datos);
 
   }
-
 }

@@ -1,9 +1,9 @@
 //Source: https://randomnerdtutorials.com/esp32-data-logging-temperature-to-microsd-card/
+
 #include "FS.h"
 #include "SD.h"
-//#include <SPI.h>
-
 #define SD_CS 5
+
 String dataMessage;
 void appendFile(fs::FS &fs, const char * path, const char * message);
 void initSD();

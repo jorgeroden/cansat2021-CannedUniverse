@@ -1,12 +1,10 @@
-//#include <Wire.h>
-//#include <SPI.h>
 #include <Adafruit_BMP280.h>
 
 #define BMP280_ADDR 0x76  //Nuestra direccion I2C
+
 Adafruit_BMP280 bmp; // use I2C interface
 Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
 Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
-
 
 void initPressTemp() {
 
@@ -27,19 +25,19 @@ String getDataPressTemp() {
   sensors_event_t temp_event, pressure_event;
   bmp_temp->getEvent(&temp_event);
   bmp_pressure->getEvent(&pressure_event);
-  return String(temp_event.temperature)+","+String(pressure_event.pressure)+",";
+  return String(temp_event.temperature) + "," + String(pressure_event.pressure);
 
 }
 float tempForOLED()
 {
-	sensors_event_t temp_event;
-	bmp_temp->getEvent(&temp_event);
-	return temp_event.temperature;
+  sensors_event_t temp_event;
+  bmp_temp->getEvent(&temp_event);
+  return temp_event.temperature;
 }
 float pressForOLED()
 {
-	sensors_event_t pressure_event;
-	bmp_pressure->getEvent(&pressure_event);
-	return pressure_event.pressure;
-	
+  sensors_event_t pressure_event;
+  bmp_pressure->getEvent(&pressure_event);
+  return pressure_event.pressure;
+
 }
