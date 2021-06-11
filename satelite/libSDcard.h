@@ -15,12 +15,14 @@ void logSDCard(String dataMessage) {
 
 void writeFile(fs::FS &fs, const char * path, const char * message) {
   File file = fs.open(path, FILE_WRITE);
+  file.print(message);
   file.close();
 }
 
 void appendFile(fs::FS &fs, const char * path, const char * message) {
 
   File file = fs.open(path, FILE_APPEND);
+  file.print(message);
   file.close();
 }
 
