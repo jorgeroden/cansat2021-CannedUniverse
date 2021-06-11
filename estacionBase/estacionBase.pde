@@ -35,7 +35,7 @@ void draw() {
     background(255);
     if (lectura != null) { //Arduino envia Temperatura y altitud en una cadena.
       String lecturaT = lectura.substring(0, 5);
-      String lecturaH = lectura.substring(5, lectura.length());//revisar si se reciben mas datos.
+      String lecturaH = lectura.substring(6,11);//revisar si se reciben mas datos.
       temperatura = float(lecturaT);
       altitud = float(lecturaH);
       altitudgraf = map(altitud, 0, 1000, alto, 0);     
