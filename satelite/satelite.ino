@@ -74,7 +74,8 @@ void loop() {
     float pressOLED = pressForOLED();
 
     //Compone la cadena de texto para grabar datos en SD
-
+    //Componer con cadenas independientes tipo pressTemp = getDataPressTem()
+    //si falla uno de los "get" la cadena datos puede quedar vacía.
     datos = getDataPressTemp() + "," + getGPS() + "," + getYPR() + "," + getAcc();
     logSDCard(datos);
     displayTemperatura(tempOLED);
